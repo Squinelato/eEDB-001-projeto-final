@@ -7,19 +7,27 @@ class MovieLensRecSys(nn.Module):
     combinado com uma rede neural baseada em filtragem
     colaborativa por meio de redes neurais.
     '''
-    def __init__(self, n_users, n_movies, embedding_size = 32):
+    def __init__(self, n_users, n_movies, embedding_size = 128):
         super().__init__()
         # definindo embedding para clientes, produtos e categorias
         self.users_embedding = nn.Embedding(n_users, embedding_size)
         self.movies_embedding = nn.Embedding(n_movies, embedding_size)
-        # definindo primeira camada de reurônios totalmente conectados
-        self.fully_conn_1 = nn.Linear(embedding_size * 2, 32)
+        # definindo primeira camada de neurônios totalmente conectados
+        self.fully_conn_1 = nn.Linear(embedding_size * 2, 128)
         self.relu_1 = nn.ReLU()
         self.dropout_1 = nn.Dropout(p=0.2)
-        # # # definindo primeira camada de reurônios totalmente conectados
-        self.fully_conn_2 = nn.Linear(32, 16)
+        # definindo segunda camada de neurônios totalmente conectados
+        self.fully_conn_2 = nn.Linear(128, 64)
         self.relu_2 = nn.ReLU()
         self.dropout_2 = nn.Dropout(p=0.2)
+        # definindo terceira camada de neurônios totalmente conectados
+        self.fully_conn_3 = nn.Linear(64, 32)
+        self.relu_3 = nn.ReLU()
+        self.dropout_3 = nn.Dropout(p=0.2)
+        # definindo quarta camada de neurônios totalmente conectados
+        self.fully_conn_4 = nn.Linear(32, 16)
+        self.relu_4 = nn.ReLU()
+        self.dropout_4 = nn.Dropout(p=0.2)
         # definindo camada de saída como um neurônio
         self.output_layer = nn.Linear(16, 1)
 
@@ -33,10 +41,18 @@ class MovieLensRecSys(nn.Module):
         output = self.fully_conn_1(concat_embeddings)
         output = self.relu_1(output)
         output = self.dropout_1(output)
-        # # # segunda camada totalmente conectada
+        # segunda camada totalmente conectada
         output = self.fully_conn_2(output)
         output = self.relu_2(output)
         output = self.dropout_2(output)
+        # terceira camada totalmente conectada
+        output = self.fully_conn_3(output)
+        output = self.relu_3(output)
+        output = self.dropout_3(output)
+        # quarta camada totalmente conectada
+        output = self.fully_conn_4(output)
+        output = self.relu_4(output)
+        output = self.dropout_4(output)
         # camada de saída
         output = self.output_layer(output)
 
